@@ -1,0 +1,25 @@
+Package: hhinfection
+Type: Package
+Title: Models secondary infections in household clusters
+Version: 0.1.0
+Author: Matthew Gibson
+Maintainer: Matthew Gibson <mdg583@gmail.com>
+Description: This package provides functions to simulate secondary infections in
+  household clusters, based on given primary infections and an underlying
+  erdos-renyi graph model with a given secondary attack rate. It can also be used
+  to compute probabilities (likelihoods) for final infection numbers in a
+  houeshold given household sizes and primary infection numbers.
+License: cran.r-project.org/web/licenses/MIT
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: yes
+RoxygenNote: 7.1.1
+LinkingTo: 
+    Rcpp,
+    RcppClock
+Imports: 
+    Rcpp,
+    MASS
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
