@@ -1,25 +1,38 @@
 Package: hhinfection
 Type: Package
-Title: Models secondary infections in household clusters
-Version: 0.1.0
+Title: Secondary Infection Model Likelihood
+Version: 0.2.0
 Author: Matthew Gibson
 Maintainer: Matthew Gibson <mdg583@gmail.com>
-Description: This package provides functions to simulate secondary infections in
-  household clusters, based on given primary infections and an underlying
-  erdos-renyi graph model with a given secondary attack rate. It can also be used
-  to compute probabilities (likelihoods) for final infection numbers in a
-  houeshold given household sizes and primary infection numbers.
+Description: This package provides functions to compute likelihood of secondary
+  infections in households, based on final infection observations. It takes 
+  observed outcome for household members (including missed observations),
+  probabilities for primary infection of household members, household secondary
+  infection rate and test sensitivity and specificity. The package also provides
+  a fast method of pre-computing probabilities for the number of secondary
+  infections for all possible numbers of primary infections and for all
+  household sizes up to a given maximum size, for a given household secondary
+  infection rate. The package includes some MCMC (Metropolis-Hastings) methods
+  to aid in generating posterior distribution for household infection models.
 License: cran.r-project.org/web/licenses/MIT
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 LinkingTo: 
-    Rcpp,
-    RcppClock
+    Rcpp
 Imports: 
     Rcpp,
-    MASS
+    MASS,
+    matrixStats,
+    mvtnorm,
+    emdbook,
+    rstan,
+    bayesplot,
+    dplyr,
+    ggplot2,
+    parallel
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

@@ -17,22 +17,6 @@
     .Call(`_hhinfection_Rlprob_sec_obs_pri`, obs, mis, pri, m, q, Sn, Sp)
 }
 
-.Rlprob_obs_hhs <- function(obs, prim, hh_sizes, q, n, Sn, Sp, T, M) {
-    .Call(`_hhinfection_Rlprob_obs_hhs_it`, obs, prim, hh_sizes, q, n, Sn, Sp, T, M)
-}
-
-.Rlprob_obs <- function(obs, prim, hh_size, q, Sn, Sp, T, M) {
-    .Call(`_hhinfection_Rlprob_obs_it`, obs, prim, hh_size, q, Sn, Sp, T, M)
-}
-
-.Rlprob_obs_pri <- function(obs, pri, m, q, Sn, Sp) {
-    .Call(`_hhinfection_Rlprob_obs_pri_it`, obs, pri, m, q, Sn, Sp)
-}
-
-.Rlprob_sec_obs_pri <- function(obs, k, m, q, Sn, Sp) {
-    .Call(`_hhinfection_Rlprob_sec_obs_pri_it`, obs, k, m, q, Sn, Sp)
-}
-
 .Rgdat <- function(max_hh, q) {
     .Call(`_hhinfection_Rgdat`, max_hh, q)
 }
@@ -40,95 +24,4 @@
 .Rg <- function(gdat, max_hh, k, m) {
     .Call(`_hhinfection_Rg`, gdat, max_hh, k, m)
 }
-
-#' Fill an array of log-probabilities for observed infections given the number of observed and secondary cases
-#'
-#' This is the same as function h(m=m,i=obs,j=act), with two differences:
-#' 1. We don't actually sum the values, but instead fill values in an array, to group summation together later
-#' 2. The arguement lfact contains (log) factors to multiply against each element, from further up summation.
-#' This is to allow a single summation, which uses the log-sum-exp method
-#'
-#' @param pbuf memory space into which min(act,obs)-max(0,obs+act-m) + 1 values will be stored
-#' @param m number of potential secondary cases
-#' @param act number of secondary cases among potential secondary cases
-#' @param obs number of observed secondary cases among potential secondary cases
-#' @param lfact log-factor which will be added to each probability
-#' @l_Sn log of test sensitivity
-#' @l_Sp log of test specificity
-#' @l_1mSn log of one minus test sensitivity
-#' @l_1mSp log of one minus test specificity
-#' @return maximum value among the elements filled-in to pbuf
-NULL
-
-#' Get the log-probability for observed secondary infections given the number of primary infections
-#'
-#' The probability depends only on the number of observed secondary cases, not which individuals have secondary infection.
-#'
-#' @param obs Number of observed infections among potential secondary cases
-#' @param mis Number of missed observations among potential secondary cases
-#' @param pri Number of primary infections
-#' @param m Number of potential secondary cases
-#' @param gdat pre-computed log-probabilities for secondary infection numbers
-#' @l_Sn log of test sensitivity
-#' @l_Sp log of test specificity
-#' @l_1mSn log of one minus test sensitivity
-#' @l_1mSp log of one minus test specificity
-#' @return maximum value among the elements filled-in to pbuf
-NULL
-
-#' Get the log-probability for observed infections given primary infections
-#'
-#' @param obs Array of observations. -1=missed, 0=observed negative, 1=observed positive
-#' @param pri Array of primary infections (0 or 1)
-#' @param hh_size Size of household
-#' @param gdat pre-computed log-probabilities for secondary infection numbers
-#' @param l_Sn log of test sensitivity
-#' @param l_Sp log of test specificity
-#' @param l_1mSn log of one minus test sensitivity
-#' @param l_1mSp log of one minus test specificity
-#' @return log-probability
-NULL
-
-#' Probability of primary infection
-#'
-#' @param pri Array of primary infections (0 or 1)
-#' @param lprim log-probabilities of primary infection
-#' @param l_1mprim log of one minus probabilities of primary infection
-#' @param n household size
-#' @return log-probability
-NULL
-
-#' Draw a sample for primary infection
-#'
-#' @param pri memory into which primary infection will be written as binary array
-#' @param p probabilities of primary infection
-#' @param n household size
-NULL
-
-#' Get the log-probability for observations in a household
-#'
-#' @param obs Array of observations. -1=missed, 0=observed negative, 1=observed positive
-#' @param prim Array of primary infection probabilities
-#' @param hh_size Size of household
-#' @param q Household secondary infection rate parameter
-#' @param Sn test sensitivity
-#' @param Sp test specificity
-#' @param T Threshold for simulations. T<0: never simulate. T=0: always simulate. Otherwise, simulate for households over size T
-#' @param M Number of simulations to compute over
-#' @return log-probability
-NULL
-
-#' Get the log-probability for observations across multiple households
-#'
-#' @param obs Array of size sum(hh_sizes) of observations. -1=missed, 0=observed negative, 1=observed positive
-#' @param prim Array of size sum(hh_sizes) of primary infection probabilities
-#' @param hh_size Array of size n of household sizes
-#' @param q Array of size n of secondary infection rates per household
-#' @param n Number of households
-#' @param Sn test sensitivity
-#' @param Sp test specificity
-#' @param T Threshold for simulations. T<0: never simulate. T=0: always simulate. Otherwise, simulate for households over size T
-#' @param M Number of simulations to compute over
-#' @return log-probability
-NULL
 

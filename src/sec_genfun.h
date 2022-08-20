@@ -1,6 +1,8 @@
 #ifndef SEC_GENFUN_H
 #define SEC_GENFUN_H
 
+// Probabilities for secondary infection. Comments in source code.
+
 #include <math.h>
 
 struct Gdat {

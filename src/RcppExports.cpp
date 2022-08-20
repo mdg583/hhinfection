@@ -80,75 +80,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// Rlprob_obs_hhs_it
-double Rlprob_obs_hhs_it(Rcpp::IntegerVector obs, Rcpp::NumericVector prim, Rcpp::IntegerVector hh_sizes, Rcpp::NumericVector q, int n, double Sn, double Sp, int T, int M);
-RcppExport SEXP _hhinfection_Rlprob_obs_hhs_it(SEXP obsSEXP, SEXP primSEXP, SEXP hh_sizesSEXP, SEXP qSEXP, SEXP nSEXP, SEXP SnSEXP, SEXP SpSEXP, SEXP TSEXP, SEXP MSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type obs(obsSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type prim(primSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type hh_sizes(hh_sizesSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type q(qSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< double >::type Sn(SnSEXP);
-    Rcpp::traits::input_parameter< double >::type Sp(SpSEXP);
-    Rcpp::traits::input_parameter< int >::type T(TSEXP);
-    Rcpp::traits::input_parameter< int >::type M(MSEXP);
-    rcpp_result_gen = Rcpp::wrap(Rlprob_obs_hhs_it(obs, prim, hh_sizes, q, n, Sn, Sp, T, M));
-    return rcpp_result_gen;
-END_RCPP
-}
-// Rlprob_obs_it
-double Rlprob_obs_it(Rcpp::IntegerVector obs, Rcpp::NumericVector prim, int hh_size, double q, double Sn, double Sp, int T, int M);
-RcppExport SEXP _hhinfection_Rlprob_obs_it(SEXP obsSEXP, SEXP primSEXP, SEXP hh_sizeSEXP, SEXP qSEXP, SEXP SnSEXP, SEXP SpSEXP, SEXP TSEXP, SEXP MSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type obs(obsSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type prim(primSEXP);
-    Rcpp::traits::input_parameter< int >::type hh_size(hh_sizeSEXP);
-    Rcpp::traits::input_parameter< double >::type q(qSEXP);
-    Rcpp::traits::input_parameter< double >::type Sn(SnSEXP);
-    Rcpp::traits::input_parameter< double >::type Sp(SpSEXP);
-    Rcpp::traits::input_parameter< int >::type T(TSEXP);
-    Rcpp::traits::input_parameter< int >::type M(MSEXP);
-    rcpp_result_gen = Rcpp::wrap(Rlprob_obs_it(obs, prim, hh_size, q, Sn, Sp, T, M));
-    return rcpp_result_gen;
-END_RCPP
-}
-// Rlprob_obs_pri_it
-double Rlprob_obs_pri_it(Rcpp::IntegerVector obs, Rcpp::IntegerVector pri, int m, double q, double Sn, double Sp);
-RcppExport SEXP _hhinfection_Rlprob_obs_pri_it(SEXP obsSEXP, SEXP priSEXP, SEXP mSEXP, SEXP qSEXP, SEXP SnSEXP, SEXP SpSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type obs(obsSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type pri(priSEXP);
-    Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< double >::type q(qSEXP);
-    Rcpp::traits::input_parameter< double >::type Sn(SnSEXP);
-    Rcpp::traits::input_parameter< double >::type Sp(SpSEXP);
-    rcpp_result_gen = Rcpp::wrap(Rlprob_obs_pri_it(obs, pri, m, q, Sn, Sp));
-    return rcpp_result_gen;
-END_RCPP
-}
-// Rlprob_sec_obs_pri_it
-double Rlprob_sec_obs_pri_it(Rcpp::IntegerVector obs, int k, int m, double q, double Sn, double Sp);
-RcppExport SEXP _hhinfection_Rlprob_sec_obs_pri_it(SEXP obsSEXP, SEXP kSEXP, SEXP mSEXP, SEXP qSEXP, SEXP SnSEXP, SEXP SpSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type obs(obsSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< double >::type q(qSEXP);
-    Rcpp::traits::input_parameter< double >::type Sn(SnSEXP);
-    Rcpp::traits::input_parameter< double >::type Sp(SpSEXP);
-    rcpp_result_gen = Rcpp::wrap(Rlprob_sec_obs_pri_it(obs, k, m, q, Sn, Sp));
-    return rcpp_result_gen;
-END_RCPP
-}
 // Rgdat
 Rcpp::NumericVector Rgdat(int max_hh, double q);
 RcppExport SEXP _hhinfection_Rgdat(SEXP max_hhSEXP, SEXP qSEXP) {
@@ -181,10 +112,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_hhinfection_Rlprob_obs", (DL_FUNC) &_hhinfection_Rlprob_obs, 8},
     {"_hhinfection_Rlprob_obs_pri", (DL_FUNC) &_hhinfection_Rlprob_obs_pri, 6},
     {"_hhinfection_Rlprob_sec_obs_pri", (DL_FUNC) &_hhinfection_Rlprob_sec_obs_pri, 7},
-    {"_hhinfection_Rlprob_obs_hhs_it", (DL_FUNC) &_hhinfection_Rlprob_obs_hhs_it, 9},
-    {"_hhinfection_Rlprob_obs_it", (DL_FUNC) &_hhinfection_Rlprob_obs_it, 8},
-    {"_hhinfection_Rlprob_obs_pri_it", (DL_FUNC) &_hhinfection_Rlprob_obs_pri_it, 6},
-    {"_hhinfection_Rlprob_sec_obs_pri_it", (DL_FUNC) &_hhinfection_Rlprob_sec_obs_pri_it, 6},
     {"_hhinfection_Rgdat", (DL_FUNC) &_hhinfection_Rgdat, 2},
     {"_hhinfection_Rg", (DL_FUNC) &_hhinfection_Rg, 4},
     {NULL, NULL, 0}

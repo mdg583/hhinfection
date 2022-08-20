@@ -2,7 +2,8 @@
 % Please edit documentation in R/mcmc.R
 \name{mcmc.chain}
 \alias{mcmc.chain}
-\title{MCMC Function method suitable for psuedo-likelihood}
+\title{Todo: Needs better documentation, code needs checking/cleaning
+MCMC Function method suitable for psuedo-likelihood}
 \usage{
 mcmc.chain(n, ll, p0, sigma, lp = lp.jeff, psuedo.ll = TRUE)
 }
@@ -23,5 +24,6 @@ mcmc.chain(n, ll, p0, sigma, lp = lp.jeff, psuedo.ll = TRUE)
 list of class mcmc.chain containing chain, acceptance vector, estimates log-likelihood vector
 }
 \description{
+Todo: Needs better documentation, code needs checking/cleaning
 MCMC Function method suitable for psuedo-likelihood
 }

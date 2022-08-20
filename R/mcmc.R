@@ -1,53 +1,4 @@
-#' Generator for samples from logistic transform of Jeffreys prior
-#' @param n number of samples to generate
-#' @export
-rp.jeff = function(n){
-  logit = function(x) log(x/(1-x))
-  logit(rbeta(n,.5,.5))
-}
-
-#' Generator for samples from logistic transform of uniform prior
-#' @param n number of samples to generate
-#' @export
-rp.unif = function(n){
-  logit = function(x) log(x/(1-x))
-  logit(runif(n,0,1))
-}
-
-#' Log-probability density of logistic transform of jeffery prior
-#'
-#' Note that for f(x) = logit(Beta(1/2,1/2)), we have E(f(x)) = 0, Var(f(x)) = pi^2
-#'
-#' @param x parameter, number or numeric vector
-#' @return f(x) for logit(Beta(1/2,1/2)) distribution
-#' @export
-lp.jeff = function(x){
-  x/2 - log(pi) - log(1+exp(x))
-}
-
-#' log-probability density of logistic transform of uniform prior
-#'
-#' Note that for f(x) = logit(Beta(1,1)), we have E(f(x)) = 0, Var(f(x)) = pi^2/3
-#'
-#' @param x parameter, number or numeric vector
-#' @return f(x)) for logit(Beta(1,1)) distribution
-#' @export
-lp.unif = function(x){
-  x - 2*log(1+exp(x))
-}
-
-#' This is a non-independent Jeffery prior for logistic regression parameters.
-#' See Chen et al, 2008: Properties and Implementation of Jeffreys's Prior in Binomial Regression Models
-#' @param X model matrix for logistic regression
-#' @return a function taking beta, logistic regression parameters, and returning log-prob of jeffery prior (up to additive constant)
-#' @export
-lp.logistic.jeff = function(X){
-  function(beta){
-    mu = X %*% beta
-    wi = exp(mu)/(1+exp(mu))^2
-    log(sqrt(det(t(X) %*% diag(as.vector(wi)) %*% X)))
-  }
-}
+#' Todo: Needs better documentation, code needs checking/cleaning
 
 #' MCMC Function method suitable for psuedo-likelihood
 #' @param n length of chain
@@ -93,6 +44,30 @@ mcmc.chain = function(n,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
   rval
 }
 
+#' Build a set of MCMC chains
+#' @param num.chains number of chains to build
+#' @param n length of chain
+#' @param ll log likelihood function, taking as arguements parameters (length of p0) and iterations it
+#' @param p0.list initial value of parameters, for each chain
+#' @param sigma covariance matrix for multivariate gaussian update kernel
+#' @param lp function of two parameter vectors, should give log(prior(p1) / prior(p0))
+#' @param psuedo.ll indicates if ll is psuedo-likelihood, in which case it must be recalculated each time
+#' @return list of mcmc.chain elements, containing chain, acceptance vector, estimates log-likelihood vector
+#' @export
+#' @importFrom MASS mvrnorm
+mcmc.chains = function(num.chains,n,ll,p0.list,sigma,lp=lp.jeff,psuedo.ll=TRUE){
+  require("parallel")
+  cores = getOption("mc.cores")
+  tim = system.time({
+    chains = mclapply(1:num.chains,function(i){
+      mcmc.chain(n,ll,p0.list[[i]],sigma,lp,psuedo.ll)
+    })
+  })
+  message(paste0("Time to build chains: ", tim["elapsed"]))
+  class(chains) = c(class(chains),"mcmc.chains")
+  chains
+}
+
 #' MCMC Function method suitable for psuedo-likelihood
 #' @param posterior A matrix of posterior samples. Columns are parameters, rows are samples.
 #' @param ll log likelihood function, taking as arguements parameters (length of p0) and iterations it
@@ -102,13 +77,14 @@ mcmc.chain = function(n,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
 #' @param psuedo.ll indicates if ll is psuedo-likelihood, in which case it must be recalculated each time
 #' @return log marginal likelihood
 #' @export
-#' @importFrom MASS mvrnorm
 #' @importFrom matrixStats logSumExp
+#' @importFrom mvtnorm rmvnorm
+#' @importFrom emdbook dmvnorm
 mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
   # Log prob density of multivariate norm, with mean 0 and given sigma
   lg.dmvnorm = function(p0, sigma){
-    # mvtnorm::dmvnorm(p0,mean=rep(0,length(p0)),sigma=sigma,log=TRUE)
-    emdbook::dmvnorm(p0, rep(0,length(p0)), sigma, log = TRUE, tol = 1e-06)
+    #dmvnorm(p0,mean=rep(0,length(p0)),sigma=sigma,log=TRUE)
+    dmvnorm(p0,mean=rep(x=0,mu=length(p0)),Sigma=sigma,log=TRUE,tol=1e-06)
   }
 
   library(parallel)
@@ -135,7 +111,7 @@ mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
   }
 
   # Generate samples for denomenator
-  prop.s = mvtnorm::rmvnorm(nrow(posterior),mean=p0,sigma=sigma)
+  prop.s = rmvnorm(nrow(posterior),mean=p0,sigma=sigma)
 
   # Denominator
   f.denom = function(i){
@@ -156,10 +132,10 @@ mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
   t.num = system.time({
     x.numer = if(cores > 1){
       x.1 = do.call(c, mclapply(1:nrow(posterior), f.numer))
-      matrixStats::logSumExp(x.1)
+      logSumExp(x.1)
     }else{
       x.1 = vapply(1:nrow(posterior),f.numer,0)
-      matrixStats::logSumExp(x.1)
+      logSumExp(x.1)
     }
   })["elapsed"]
 
@@ -168,10 +144,10 @@ mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
   t.den = system.time({
     x.denom = if(cores > 1){
       x.2 = do.call(c, mclapply(1:nrow(posterior), f.denom))
-      matrixStats::logSumExp(x.2)
+      logSumExp(x.2)
     }else{
       x.2 = vapply(1:nrow(posterior),f.denom,0)
-      matrixStats::logSumExp(x.2)
+      logSumExp(x.2)
     }
   })["elapsed"]
   message(paste0("Time to generate denominator: ", round(t.den,4)))
@@ -187,11 +163,11 @@ mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
     x.mle = if(cores > 1){
       x.3 = do.call(c, mclapply(1:nrow(posterior), f.mle))
       # sum(x.3) / nrow(posterior)
-      matrixStats::logSumExp(x.3) - log(nrow(posterior))
+      logSumExp(x.3) - log(nrow(posterior))
     }else{
       x.3 = vapply(1:nrow(posterior),f.mle,0)
       # sum(x.3) / nrow(posterior)
-      matrixStats::logSumExp(x.3) - log(nrow(posterior))
+      logSumExp(x.3) - log(nrow(posterior))
     }
   })["elapsed"]
   message(paste0("Time to generate ll(mle): ", round(t.mle,4)))
@@ -200,30 +176,6 @@ mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
   x.mle + sum(lp(p0)) - (x.numer - x.denom)
   # Return broken up results in order to assess where the source of variance may be
   # data.frame(lme"=x.mle,"lp"=sum(lp(p0)),"num"=x.numer,"den"=x.denom)
-}
-
-#' Build a set of MCMC chains
-#' @param num.chains number of chains to build
-#' @param n length of chain
-#' @param ll log likelihood function, taking as arguements parameters (length of p0) and iterations it
-#' @param p0.list initial value of parameters, for each chain
-#' @param sigma covariance matrix for multivariate gaussian update kernel
-#' @param lp function of two parameter vectors, should give log(prior(p1) / prior(p0))
-#' @param psuedo.ll indicates if ll is psuedo-likelihood, in which case it must be recalculated each time
-#' @return list of mcmc.chain elements, containing chain, acceptance vector, estimates log-likelihood vector
-#' @export
-#' @importFrom MASS mvrnorm
-mcmc.chains = function(num.chains,n,ll,p0.list,sigma,lp=lp.jeff,psuedo.ll=TRUE){
-  require("parallel")
-  cores = getOption("mc.cores")
-  tim = system.time({
-    chains = mclapply(1:num.chains,function(i){
-      mcmc.chain(n,ll,p0.list[[i]],sigma,lp,psuedo.ll)
-    })
-  })
-  message(paste0("Time to build chains: ", tim["elapsed"]))
-  class(chains) = c(class(chains),"mcmc.chains")
-  chains
 }
 
 #' @export
@@ -449,23 +401,3 @@ check.ll = function(p0,ll,runs=200){
   }
   tmp.x[!is.infinite(tmp.x)] #%>% var()
 }
-
-
-# Need a print function that shows acceptance rates across all chains, as well as final likelihood, number of parameters, number of chains, etc
-# Need plot functions for:
-#  - likelihood convergence
-#  - parameter chains (bayesplot trace)
-#  - acf plots (bayesplot)
-#  - intervals
-#  - Try others?
-
-# Need a function to generate a posterior sample?
-# Need stat_density_2d of posterior
-# Need a print summary of posterior?
-
-# Need rstan functionality:
-# - Rhat
-# - ess_bulk
-# - ess_tail
-
-# Hopefully these things make building these chains easier.

@@ -7,15 +7,15 @@
 sec_prob(sec_prob_data, k, m)
 }
 \arguments{
-\item{sec_prob_data}{Maximum household size for which to compute probabilities}
+\item{sec_prob_data}{pre-computed probability data (result of \code{\link[=sec_prob_init]{sec_prob_init()}})}
 
-\item{k}{Number of primary infections}
+\item{k}{Primary infections}
 
-\item{m}{Number of susceptibles (household size - k)}
+\item{m}{Susceptibles (household size - k)}
 }
 \value{
-vector of probabilities of infection for household, from 0 ... m
+generating function coefficients, or probabilities of infection for j=0...m
 }
 \description{
-This uses pre-computed probabilities generated using sec_prob_innit
+This uses pre-computed probabilities generated using \code{\link[=sec_prob_init]{sec_prob_init()}}
 }

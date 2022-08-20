@@ -4,17 +4,7 @@
 \alias{prob_obs_hhs}
 \title{Probability of observed outcomes across multiple households}
 \usage{
-prob_obs_hhs(
-  obs,
-  prim,
-  hh_sizes,
-  q,
-  Sn = 1,
-  Sp = 1,
-  Thresh = -1,
-  M = 0,
-  it = FALSE
-)
+prob_obs_hhs(obs, prim, hh_sizes, q, Sn = 1, Sp = 1, Thresh = -1, M = 0)
 }
 \arguments{
 \item{obs}{vector of observed cases. 1=positive for infection, 0=negative for infection, NA=unobserved individual}
@@ -32,15 +22,15 @@ prob_obs_hhs(
 \item{Thresh}{household size threshold for use of simulation for primary infection}
 
 \item{M}{number of iterations for primary infection simulation}
-
-\item{it}{whether to use iteration for secondary cases (for performance measure only)}
 }
 \value{
-probability of observation
+log-probability of observation
 }
 \description{
-Probability is computed by simulating primary infections
-T < 0: always iterate
-T = 0: always simulate (M iterations)
-T > 0: iterate for households up to size T, then simulate
+Probability computer by iterating or simulating primary infections:
+\itemize{
+\item T < 0: always iterate
+\item T = 0: always simulate (M iterations)
+\item T > 0: iterate for households up to size T, then simulate
+}
 }

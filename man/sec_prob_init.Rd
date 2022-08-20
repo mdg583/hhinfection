@@ -17,7 +17,5 @@ list object containing pre-computed probabilities and max household size
 \description{
 Probabilities are generated for all household sizes from 1 to max_hh,
 and for all possible numbers of primary infection from 0 to household size.
-}
-\details{
-Probabilities for a specific household are retrieved using sec_prob.
+Use \code{\link[=sec_prob]{sec_prob()}} to get sepcific secondary infection probabilities.
 }
