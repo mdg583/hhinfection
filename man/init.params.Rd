@@ -4,7 +4,7 @@
 \alias{init.params}
 \title{Get initial parameter values that give a finite likelihood}
 \usage{
-init.params(param.names, ll, chains = 1, prior = rp.jeff)
+init.params(param.names, ll, chains = 1, prior)
 }
 \arguments{
 \item{param.names}{names of parameters (also indicates the number of parameters)}

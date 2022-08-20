@@ -4,7 +4,7 @@
 \alias{mcmc.chains}
 \title{Build a set of MCMC chains}
 \usage{
-mcmc.chains(num.chains, n, ll, p0.list, sigma, lp = lp.jeff, psuedo.ll = TRUE)
+mcmc.chains(num.chains, n, ll, p0.list, sigma, lp, psuedo.ll = TRUE)
 }
 \arguments{
 \item{num.chains}{number of chains to build}

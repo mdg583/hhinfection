@@ -10,7 +10,7 @@
 #' @return list of class mcmc.chain containing chain, acceptance vector, estimates log-likelihood vector
 #' @export
 #' @importFrom MASS mvrnorm
-mcmc.chain = function(n,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
+mcmc.chain = function(n,ll,p0,sigma,lp,psuedo.ll=TRUE){
   updates = floor(n/10) # for console output
   chain = matrix(NA,nrow=n,ncol=length(p0))
   colnames(chain) = names(p0)
@@ -55,7 +55,7 @@ mcmc.chain = function(n,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
 #' @return list of mcmc.chain elements, containing chain, acceptance vector, estimates log-likelihood vector
 #' @export
 #' @importFrom MASS mvrnorm
-mcmc.chains = function(num.chains,n,ll,p0.list,sigma,lp=lp.jeff,psuedo.ll=TRUE){
+mcmc.chains = function(num.chains,n,ll,p0.list,sigma,lp,psuedo.ll=TRUE){
   require("parallel")
   cores = getOption("mc.cores")
   tim = system.time({
@@ -80,7 +80,7 @@ mcmc.chains = function(num.chains,n,ll,p0.list,sigma,lp=lp.jeff,psuedo.ll=TRUE){
 #' @importFrom matrixStats logSumExp
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom emdbook dmvnorm
-mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp=lp.jeff,psuedo.ll=TRUE){
+mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp,psuedo.ll=TRUE){
   # Log prob density of multivariate norm, with mean 0 and given sigma
   lg.dmvnorm = function(p0, sigma){
     #dmvnorm(p0,mean=rep(0,length(p0)),sigma=sigma,log=TRUE)
@@ -352,7 +352,7 @@ init.sig = function(p.var){
 #' @param chains if > 1, a list of initial parameter vectors will be returned
 #' @return If a non-0 likelihood is found within 1000 uniform random samples, the corresponding parameter vector is returned
 #' @export
-init.params = function(param.names,ll,chains=1,prior=rp.jeff){
+init.params = function(param.names,ll,chains=1,prior){
   if(chains > 1){
     lapply(1:chains, function(i){init.params(param.names, ll)})
   }else{

@@ -4,7 +4,7 @@
 \alias{mcmc.marginal.lik}
 \title{MCMC Function method suitable for psuedo-likelihood}
 \usage{
-mcmc.marginal.lik(posterior, ll, p0, sigma, lp = lp.jeff, psuedo.ll = TRUE)
+mcmc.marginal.lik(posterior, ll, p0, sigma, lp, psuedo.ll = TRUE)
 }
 \arguments{
 \item{posterior}{A matrix of posterior samples. Columns are parameters, rows are samples.}

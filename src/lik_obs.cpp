@@ -71,7 +71,7 @@ double lprob_sec_obs_pri(int obs, int mis, int pri, int m, Gdat gdat,
   //   all     2439.2  100.0%
   //   loop    2160.8   88.6%
   //   mse      125.3    5.1%
-  // Peformance comments: Cost is in the loop. Cost of mse is not too much, not malloc (~6.3%).
+  // Peformance comments: Cost is in the loop. Cost of mse is not too much, nor malloc (~6.3%).
 
   // How much memory is needed? Loop over summations to count memory needed.
   int buf_size = 0;
