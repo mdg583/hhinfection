@@ -9,20 +9,20 @@ mcmc.chains(num.chains, n, ll, p0.list, sigma, lp, psuedo.ll = TRUE)
 \arguments{
 \item{num.chains}{number of chains to build}
 
-\item{n}{length of chain}
+\item{n}{length of chains}
 
-\item{ll}{log likelihood function, taking as arguements parameters (length of p0) and iterations it}
+\item{ll}{log likelihood function, taking as arguments parameters p0}
 
-\item{p0.list}{initial value of parameters, for each chain}
+\item{p0.list}{list, initial value of parameters for each chain}
 
 \item{sigma}{covariance matrix for multivariate gaussian update kernel}
 
-\item{lp}{function of two parameter vectors, should give log(prior(p1) / prior(p0))}
+\item{lp}{function of parameters p0 giving the prior log-probability for each parameter}
 
 \item{psuedo.ll}{indicates if ll is psuedo-likelihood, in which case it must be recalculated each time}
 }
 \value{
-list of mcmc.chain elements, containing chain, acceptance vector, estimates log-likelihood vector
+mcmc.chains object, list of chain objects
 }
 \description{
 Build a set of MCMC chains

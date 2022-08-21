@@ -2,28 +2,26 @@
 % Please edit documentation in R/mcmc.R
 \name{mcmc.chain}
 \alias{mcmc.chain}
-\title{Todo: Needs better documentation, code needs checking/cleaning
-MCMC Function method suitable for psuedo-likelihood}
+\title{MCMC Function method suitable for psuedo-likelihood}
 \usage{
 mcmc.chain(n, ll, p0, sigma, lp, psuedo.ll = TRUE)
 }
 \arguments{
 \item{n}{length of chain}
 
-\item{ll}{log likelihood function, taking as arguements parameters (length of p0) and iterations it}
+\item{ll}{log likelihood function, taking as arguments parameters p0}
 
 \item{p0}{initial value of parameters}
 
 \item{sigma}{covariance matrix for multivariate gaussian update kernel}
 
-\item{lp}{function of two parameter vectors, should give log(prior(p1) / prior(p0))}
+\item{lp}{function of parameters p0 giving the prior log-probability for each parameter}
 
 \item{psuedo.ll}{indicates if ll is psuedo-likelihood, in which case it must be recalculated each time}
 }
 \value{
-list of class mcmc.chain containing chain, acceptance vector, estimates log-likelihood vector
+mcmc.chain object, containing chain samples, acceptance variables and computed log-likelihoods
 }
 \description{
-Todo: Needs better documentation, code needs checking/cleaning
 MCMC Function method suitable for psuedo-likelihood
 }

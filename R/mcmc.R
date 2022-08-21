@@ -1,13 +1,12 @@
-#' Todo: Needs better documentation, code needs checking/cleaning
-
 #' MCMC Function method suitable for psuedo-likelihood
+#'
 #' @param n length of chain
-#' @param ll log likelihood function, taking as arguements parameters (length of p0) and iterations it
+#' @param ll log likelihood function, taking as arguments parameters p0
 #' @param p0 initial value of parameters
 #' @param sigma covariance matrix for multivariate gaussian update kernel
-#' @param lp function of two parameter vectors, should give log(prior(p1) / prior(p0))
+#' @param lp function of parameters p0 giving the prior log-probability for each parameter
 #' @param psuedo.ll indicates if ll is psuedo-likelihood, in which case it must be recalculated each time
-#' @return list of class mcmc.chain containing chain, acceptance vector, estimates log-likelihood vector
+#' @return mcmc.chain object, containing chain samples, acceptance variables and computed log-likelihoods
 #' @export
 #' @importFrom MASS mvrnorm
 mcmc.chain = function(n,ll,p0,sigma,lp,psuedo.ll=TRUE){
@@ -45,14 +44,15 @@ mcmc.chain = function(n,ll,p0,sigma,lp,psuedo.ll=TRUE){
 }
 
 #' Build a set of MCMC chains
+#'
 #' @param num.chains number of chains to build
-#' @param n length of chain
-#' @param ll log likelihood function, taking as arguements parameters (length of p0) and iterations it
-#' @param p0.list initial value of parameters, for each chain
+#' @param n length of chains
+#' @param ll log likelihood function, taking as arguments parameters p0
+#' @param p0.list list, initial value of parameters for each chain
 #' @param sigma covariance matrix for multivariate gaussian update kernel
-#' @param lp function of two parameter vectors, should give log(prior(p1) / prior(p0))
+#' @param lp function of parameters p0 giving the prior log-probability for each parameter
 #' @param psuedo.ll indicates if ll is psuedo-likelihood, in which case it must be recalculated each time
-#' @return list of mcmc.chain elements, containing chain, acceptance vector, estimates log-likelihood vector
+#' @return mcmc.chains object, list of chain objects
 #' @export
 #' @importFrom MASS mvrnorm
 mcmc.chains = function(num.chains,n,ll,p0.list,sigma,lp,psuedo.ll=TRUE){
@@ -68,23 +68,22 @@ mcmc.chains = function(num.chains,n,ll,p0.list,sigma,lp,psuedo.ll=TRUE){
   chains
 }
 
-#' MCMC Function method suitable for psuedo-likelihood
+#' MCMC Function method suitable for estimated likelihood function
+#'
 #' @param posterior A matrix of posterior samples. Columns are parameters, rows are samples.
-#' @param ll log likelihood function, taking as arguements parameters (length of p0) and iterations it
-#' @param p0 any paramter value, typically maximum likelihood estimate or any high likelihood estimate
+#' @param ll log likelihood function, taking as arguments parameters p0
+#' @param p0 any paramter value, one of high posterior density
 #' @param sigma covariance matrix for multivariate gaussian update kernel
-#' @param lp log probability density function of parameter priors
+#' @param lp function of parameters p0 giving the prior log-probability for each parameter
 #' @param psuedo.ll indicates if ll is psuedo-likelihood, in which case it must be recalculated each time
-#' @return log marginal likelihood
+#' @return log marginal likelihood estimate
 #' @export
 #' @importFrom matrixStats logSumExp
-#' @importFrom mvtnorm rmvnorm
-#' @importFrom emdbook dmvnorm
+#' @importFrom mvtnorm rmvnorm dmvnorm
 mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp,psuedo.ll=TRUE){
   # Log prob density of multivariate norm, with mean 0 and given sigma
   lg.dmvnorm = function(p0, sigma){
-    #dmvnorm(p0,mean=rep(0,length(p0)),sigma=sigma,log=TRUE)
-    dmvnorm(p0,mean=rep(x=0,mu=length(p0)),Sigma=sigma,log=TRUE,tol=1e-06)
+    dmvnorm(p0,mean=rep(0,length(p0)),sigma=sigma,log=TRUE)
   }
 
   library(parallel)
@@ -123,12 +122,6 @@ mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp,psuedo.ll=TRUE){
     if(is.nan(a)) -Inf else a
   }
 
-  # Compute denom and num in parallel?
-  # For large problems (where parallel computing is helpful), this is probably not necessary
-  # parallel::mccollect()
-
-  # 2.296587
-  # 2.319892
   t.num = system.time({
     x.numer = if(cores > 1){
       x.1 = do.call(c, mclapply(1:nrow(posterior), f.numer))
@@ -171,11 +164,9 @@ mcmc.marginal.lik = function(posterior,ll,p0,sigma,lp,psuedo.ll=TRUE){
     }
   })["elapsed"]
   message(paste0("Time to generate ll(mle): ", round(t.mle,4)))
-  #x.mle = ll(p0)
-  # Marginal likelihood
+
+  # Estimated marginal likelihood
   x.mle + sum(lp(p0)) - (x.numer - x.denom)
-  # Return broken up results in order to assess where the source of variance may be
-  # data.frame(lme"=x.mle,"lp"=sum(lp(p0)),"num"=x.numer,"den"=x.denom)
 }
 
 #' @export
@@ -184,7 +175,10 @@ lastparam = function(chain,n){
 }
 
 #' Get parameter values at the end of a chain
-#' @param chain mcmc.chain, where the parameter chain is in $chain
+#'
+#' If n is provides, parameter values for each chain are averaged over n final samples
+#'
+#' @param chain mcmc.chain
 #' @param n number of end samples to average over
 #' @return parameter vector of average parameters over n last samples
 #' @export
@@ -193,7 +187,10 @@ lastparam.mcmc.chain = function(chain,n=1){
   apply(chain$chain[(l+1-n):l,,drop=FALSE],2,mean)
 }
 
-#' Get parameter values at the end of a chain
+#' Get parameter values at the end of each chain in mcmc.chains object
+#'
+#' If n is provides, parameter values for each chain are averaged over n final samples
+#'
 #' @param chains mcmc.chains
 #' @param n number of end samples to average over
 #' @return list of parameter vectors of average parameters over n last samples
@@ -204,24 +201,29 @@ lastparam.mcmc.chains = function(chains,n=1){
   })
 }
 
-# Combine the chains in a list of chains, and return the chains as a matrix
+#' Get all chain samples from the chains in an mcmc.chains objects as a matrix
+#'
+#' @param chains mcmc.chains
+#' @return a matrix with each column a parameter
 combine.chains = function(chains){
   chains_list = lapply(chains,function(ch) ch$chain)
   do.call(rbind,chains_list)
 }
 
-# Get all samples for a given parameter across chains
+#' Get all samples for a given parameter across chains
+#'
+#' @param chains mcmc.chains object
+#' @param param name of parameter to get samples for
 chains_param = function(chains,param){
   do.call(cbind,lapply(chains,function(ch) ch$chain[,param]))
 }
 
 #' Create a new sigma based on parameter chain
 #'
-#' Update uses cov(chain) * 2.38^2 / # params
+#' Update uses cov(chain) * 2.38^2 / k for k parameters
 #'
 #' @param chains An mcmc.chain or mcmc.chains
 #' @return A suggested sigma function for multivariate normal proposal function
-#'
 #' @export
 chains.sigma = function(chains){
   if("mcmc.chains" %in% class(chains)){
@@ -232,6 +234,9 @@ chains.sigma = function(chains){
   cov(param.chain)*(2.38^2)/ncol(param.chain)
 }
 
+#' Print convergence stats for MCMC chain
+#'
+#' @param chain mcmc.chain
 #' @export
 print.mcmc.chain = function(chain){
   ch.len = nrow(chain$chain)
@@ -243,6 +248,12 @@ print.mcmc.chain = function(chain){
   cat("\n")
 }
 
+#' Print convergence stats set of for MCMC chains
+#'
+#' Includes convergence stats R-hat and effective sample size (block and tail),
+#' as computed by rstan functions [rstan::Rhat()] [rstan::ess_bulk()] [rstan::ess_tail()].
+#'
+#' @param chains mcmc.chains
 #' @export
 #' @importFrom rstan Rhat ess_bulk ess_tail
 print.mcmc.chains = function(chains){
@@ -287,6 +298,23 @@ print.mcmc.chains = function(chains){
   print(cv.df)
 }
 
+#' Create a plot for a set of MCMC chains
+#'
+#' Plotting uses ggplot and the functions provided by bayesplot: [bayesplot::mcmc_trace_data()]
+#' [bayesplot::mcmc_acf()] [bayesplot::mcmc_intervals()] [bayesplot::mcmc_violin()] [bayesplot::mcmc_dens()]
+#'
+#' Plot options:
+#' - trace: trace of parameters for chains
+#' - likelihood: trace of likelihood for chains
+#' - acf: autocorrelation plots for parameters
+#' - intervals: intervals plots for parameters
+#' - violins: violins plots for parameters
+#' - density: density plots for parameters
+#' - desnity_2d: Two-dimensional density plot for 2 parameters
+#'
+#' @param chains mcmc.chains
+#' @param type type of plot to plot
+#' @param ... arguments for plotting
 #' @export
 #' @importFrom bayesplot mcmc_trace_data mcmc_acf mcmc_intervals mcmc_violin mcmc_dens
 #' @importFrom dplyr `%>%`
@@ -337,9 +365,12 @@ plot.mcmc.chains = function(chains, type="trace",...){
   }
 }
 
-#' Initialize the std dev of proposal function
+#' Initialize covariance matrix of proposal function
+#'
+#' Covariance matrix is diagonal with standard deviation 1/10 sd of priors
+#'
 #' @param p.var vector of variances of parameter priors
-#' @return a nxn diagonal matrix, with entries sqrt(p.var)/10, or 1/10 the sd of priors
+#' @return a nxn diagonal matrix
 #' @export
 init.sig = function(p.var){
   # We set the initial proposal sd as 1/10 the sd of the priors
@@ -347,22 +378,23 @@ init.sig = function(p.var){
 }
 
 #' Get initial parameter values that give a finite likelihood
-#' @param param.names names of parameters (also indicates the number of parameters)
-#' @param ll log-likelihood (or psuedo log-likelihood) function
-#' @param chains if > 1, a list of initial parameter vectors will be returned
+#'
+#' @param param.names names of parameters (also indicates number of parameters)
+#' @param ll log-likelihood estimate function
+#' @param chains number of chains.
 #' @return If a non-0 likelihood is found within 1000 uniform random samples, the corresponding parameter vector is returned
 #' @export
 init.params = function(param.names,ll,chains=1,prior){
   if(chains > 1){
-    lapply(1:chains, function(i){init.params(param.names, ll)})
+    lapply(1:chains, function(i){init.params(param.names,ll,1,prior)})
   }else{
     nvars = length(param.names)
-    p0 = prior(nvars)
+    p0 = prior()
     tries = 0
     inf.nan = function(x) any(is.nan(x) | is.infinite(x))
     while(inf.nan(ll(p0))){
       tries = tries + 1
-      p0 = prior(nvars)
+      p0 = prior()
       if(tries > 1000) stop("Failed to find parameter values in 1000 iterations")
     }
     names(p0) = param.names
@@ -370,11 +402,14 @@ init.params = function(param.names,ll,chains=1,prior){
   }
 }
 
-#' Measure the variance of a log-likelihood estimate function
+#' Get a sample of log-likelihood estimates for given parameter
+#'
+#' This is done in parallel if possible. It is for checking log-likelihood variance.
+#'
 #' @param p0 parameter vector
 #' @param ll log-likelihood estimate function
-#' @param runs number of iterations over which to compute the variance
-#' @return A measure of the variance of the log-likelihood estimate function
+#' @param runs number of iterations
+#' @return samples of log-likelihood estimate
 #' @export
 #' @import parallel
 #' @importFrom dplyr `%>%`
@@ -384,7 +419,6 @@ check.ll = function(p0,ll,runs=200){
     y = cut(x,...)
     lapply(levels(y),function(fct) x[y==fct])
   }
-  require("parallel")
   cores = getOption("mc.cores")
   if(is.null(cores)) cores = 1
   if(cores > 1 && runs > cores*10){

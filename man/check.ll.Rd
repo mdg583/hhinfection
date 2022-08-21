@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcmc.R
 \name{check.ll}
 \alias{check.ll}
-\title{Measure the variance of a log-likelihood estimate function}
+\title{Get a sample of log-likelihood estimates for given parameter}
 \usage{
 check.ll(p0, ll, runs = 200)
 }
@@ -11,11 +11,11 @@ check.ll(p0, ll, runs = 200)
 
 \item{ll}{log-likelihood estimate function}
 
-\item{runs}{number of iterations over which to compute the variance}
+\item{runs}{number of iterations}
 }
 \value{
-A measure of the variance of the log-likelihood estimate function
+samples of log-likelihood estimate
 }
 \description{
-Measure the variance of a log-likelihood estimate function
+This is done in parallel if possible. It is for checking log-likelihood variance.
 }

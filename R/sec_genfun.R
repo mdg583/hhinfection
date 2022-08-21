@@ -5,10 +5,10 @@
 #' Use [sec_prob()] to get sepcific secondary infection probabilities.
 #'
 #' @param max_hh Maximum household size for which to compute probabilities
-#' @param sar Secondary attack rate (probability of infection between any infectious and susceptible)
+#' @param q Secondary attack rate (probability of infection between any infectious and susceptible)
 #' @return list object containing pre-computed probabilities and max household size
 #' @export
-sec_prob_init = function(max_hh,sar){
+sec_prob_init = function(max_hh,q){
   dat = .Rgdat(max_hh,sar)
   list(
     data=dat,

@@ -27,7 +27,6 @@ Imports:
     MASS,
     matrixStats,
     mvtnorm,
-    emdbook,
     rstan,
     bayesplot,
     dplyr,

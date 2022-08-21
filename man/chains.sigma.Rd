@@ -13,5 +13,5 @@ chains.sigma(chains)
 A suggested sigma function for multivariate normal proposal function
 }
 \description{
-Update uses cov(chain) * 2.38^2 / # params
+Update uses cov(chain) * 2.38^2 / k for k parameters
 }

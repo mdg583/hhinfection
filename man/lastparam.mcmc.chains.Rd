@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcmc.R
 \name{lastparam.mcmc.chains}
 \alias{lastparam.mcmc.chains}
-\title{Get parameter values at the end of a chain}
+\title{Get parameter values at the end of each chain in mcmc.chains object}
 \usage{
 \method{lastparam}{mcmc.chains}(chains, n = 1)
 }
@@ -15,5 +15,5 @@
 list of parameter vectors of average parameters over n last samples
 }
 \description{
-Get parameter values at the end of a chain
+If n is provides, parameter values for each chain are averaged over n final samples
 }

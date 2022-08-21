@@ -7,11 +7,11 @@
 init.params(param.names, ll, chains = 1, prior)
 }
 \arguments{
-\item{param.names}{names of parameters (also indicates the number of parameters)}
+\item{param.names}{names of parameters (also indicates number of parameters)}
 
-\item{ll}{log-likelihood (or psuedo log-likelihood) function}
+\item{ll}{log-likelihood estimate function}
 
-\item{chains}{if > 1, a list of initial parameter vectors will be returned}
+\item{chains}{number of chains.}
 }
 \value{
 If a non-0 likelihood is found within 1000 uniform random samples, the corresponding parameter vector is returned

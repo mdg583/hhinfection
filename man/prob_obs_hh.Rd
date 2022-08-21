@@ -4,7 +4,7 @@
 \alias{prob_obs_hh}
 \title{Probability of observed household outcome}
 \usage{
-prob_obs_hh(obs, prim, q, Sn = 1, Sp = 1, Thresh = -1, M = 0, it = FALSE)
+prob_obs_hh(obs, prim, q, Sn = 1, Sp = 1, Thresh = -1, M = 0)
 }
 \arguments{
 \item{obs}{observed household cases. 1=infected, 0=not infection, NA=no observation}

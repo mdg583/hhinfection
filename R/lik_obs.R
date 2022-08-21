@@ -57,7 +57,7 @@ prob_obs_hhs = function(obs,prim,hh_sizes,q,Sn=1,Sp=1,Thresh=-1,M=0){
 #' @param M number of iterations for primary infection simulation
 #' @return log-probability of observation
 #' @export
-prob_obs_hh = function(obs,prim,q,Sn=1,Sp=1,Thresh=-1,M=0,it=FALSE){
+prob_obs_hh = function(obs,prim,q,Sn=1,Sp=1,Thresh=-1,M=0){
   obs = ifelse(is.na(obs),-1,as.integer(obs)) # Convert NA to -1
   prim = as.numeric(prim)
   q=as.numeric(q)

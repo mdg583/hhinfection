@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcmc.R
 \name{init.sig}
 \alias{init.sig}
-\title{Initialize the std dev of proposal function}
+\title{Initialize covariance matrix of proposal function}
 \usage{
 init.sig(p.var)
 }
@@ -10,8 +10,8 @@ init.sig(p.var)
 \item{p.var}{vector of variances of parameter priors}
 }
 \value{
-a nxn diagonal matrix, with entries sqrt(p.var)/10, or 1/10 the sd of priors
+a nxn diagonal matrix
 }
 \description{
-Initialize the std dev of proposal function
+Covariance matrix is diagonal with standard deviation 1/10 sd of priors
 }

@@ -4,12 +4,12 @@
 \alias{sec_prob_init}
 \title{Precompute secondary infection probabilities}
 \usage{
-sec_prob_init(max_hh, sar)
+sec_prob_init(max_hh, q)
 }
 \arguments{
 \item{max_hh}{Maximum household size for which to compute probabilities}
 
-\item{sar}{Secondary attack rate (probability of infection between any infectious and susceptible)}
+\item{q}{Secondary attack rate (probability of infection between any infectious and susceptible)}
 }
 \value{
 list object containing pre-computed probabilities and max household size

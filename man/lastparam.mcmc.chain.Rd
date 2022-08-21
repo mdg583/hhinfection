@@ -7,7 +7,7 @@
 \method{lastparam}{mcmc.chain}(chain, n = 1)
 }
 \arguments{
-\item{chain}{mcmc.chain, where the parameter chain is in $chain}
+\item{chain}{mcmc.chain}
 
 \item{n}{number of end samples to average over}
 }
@@ -15,5 +15,5 @@
 parameter vector of average parameters over n last samples
 }
 \description{
-Get parameter values at the end of a chain
+If n is provides, parameter values for each chain are averaged over n final samples
 }
