@@ -9,7 +9,7 @@
 #' @return list object containing pre-computed probabilities and max household size
 #' @export
 sec_prob_init = function(max_hh,q){
-  dat = .Rgdat(max_hh,sar)
+  dat = .Rgdat(max_hh,q)
   list(
     data=dat,
     max_hh=max_hh
